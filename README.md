@@ -118,7 +118,10 @@ echo "sdk.dir=/path/to/Android/Sdk" > local.properties   # 这个文件不入库
 
 1.0.0 → 1.12.0 每个版本改了什么、为什么改，见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 许可证
+
+[MIT](LICENSE)
+
 ## 说明
 
 - 本项目只用于管理自己合法拥有的电子书，不提供任何书籍内容。
-- 仓库目前未附开源许可证（默认保留所有权利）。需要的话可以补一个 MIT / Apache-2.0。
