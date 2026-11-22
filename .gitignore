@@ -1,0 +1,46 @@
+# ---------------- 本机私有文件：绝不入库 ----------------
+# 发布签名（密钥 + 口令）
+bookcase-android/app/keystore/
+bookcase-android/keystore.properties
+bookcase-android/local.properties
+*.jks
+*.keystore
+
+# 运行配置：里面有访问口令
+bookcase/config.json
+bookcase/.env
+.env
+*.env
+
+# 书库数据（书目、封面、回收站都算个人数据）
+bookcase/library.db
+bookcase/library.db-*
+bookcase/covers/
+bookcase/data/
+bookcase/trash/
+
+# ---------------- 构建产物与缓存 ----------------
+*.apk
+*.aab
+*.zip
+__pycache__/
+*.py[cod]
+.pytest_cache/
+bookcase-android/.gradle/
+bookcase-android/build/
+bookcase-android/app/build/
+bookcase-android/.idea/
+bookcase-android/.kotlin/
+bookcase-android/captures/
+
+# ---------------- 工作区里与仓库无关的东西 ----------------
+.clitest/
+.shots/
+书库*.md
+作品集-*.md
+_*.txt
+
+# ---------------- 系统垃圾 ----------------
+Thumbs.db
+desktop.ini
+.DS_Store

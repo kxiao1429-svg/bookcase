@@ -1,0 +1,15 @@
+[Unit]
+Description=Bookcase 私有云书库
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/sata/.storage/bookcase
+ExecStart=/usr/bin/python3 /sata/.storage/bookcase/server.py
+Restart=on-failure
+RestartSec=5
+Environment=BOOKCASE_CONFIG=/sata/.storage/bookcase/config.json
+Nice=19
+
+[Install]
+WantedBy=multi-user.target

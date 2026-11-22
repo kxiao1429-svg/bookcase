@@ -1,0 +1,20 @@
+services:
+  bookcase:
+    build: .
+    image: bookcase:local
+    container_name: bookcase
+    restart: unless-stopped
+    ports:
+      - "${BOOKCASE_PORT:-8765}:8765"
+    environment:
+      BOOKCASE_TOKEN: "${BOOKCASE_TOKEN:?请先复制 .env.example 为 .env 并设置 BOOKCASE_TOKEN}"
+      BOOKCASE_ROOTS: /books
+      BOOKCASE_UPLOAD_DIR: /books/上传
+      BOOKCASE_MAX_UPLOAD_MB: "${BOOKCASE_MAX_UPLOAD_MB:-4096}"
+      BOOKCASE_AUTO_SCAN_MIN: "${BOOKCASE_AUTO_SCAN_MIN:-10}"
+      TZ: Asia/Shanghai
+    volumes:
+      # NAS 上真正放电子书的目录（共享文件夹）
+      - "${BOOKS_DIR:-./books}:/books"
+      # 数据库、封面、上传临时文件，必须持久化
+      - "${DATA_DIR:-./data}:/data"

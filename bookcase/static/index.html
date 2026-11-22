@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#121009">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>书库</title>
+<link rel="manifest" href="/static/manifest.json">
+<link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/style.css?v=8">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" class="logo" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5V5.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5A2.5 2.5 0 0 1 4 20.5Z" fill="currentColor" opacity=".25"/></svg>
+      <div>
+        <h1>书库</h1>
+        <p id="subtitle">正在读取…</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="uploadBtn" class="icon-btn" title="上传电子书到云端" aria-label="上传电子书到云端">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </button>
+      <button id="scanBtn" class="icon-btn" title="重新扫描" aria-label="重新扫描">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="scanline" class="scanline" hidden></div>
+
+  <main>
+    <!-- 书架 -->
+    <section id="view-shelf">
+      <div id="listBanner" class="list-banner" hidden>
+        <div class="lb-head">
+          <span class="lb-name" id="lbName"></span>
+          <button id="lbEdit" class="icon-btn small" aria-label="编辑书单">✎</button>
+          <button id="lbClose" class="icon-btn small" aria-label="退出书单">×</button>
+        </div>
+        <p class="lb-note" id="lbNote"></p>
+        <div class="lb-meta" id="lbMeta"></div>
+        <div class="pbar lb-bar"><span id="lbBar"></span></div>
+        <div class="lb-actions">
+          <a id="lbDownload" class="btn small" href="#" hidden>下载书单</a>
+          <button id="lbAdd" class="btn small">＋ 添加书籍</button>
+        </div>
+      </div>
+
+      <div class="searchwrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="搜书名、作者…" autocomplete="off" enterkeyhint="search">
+      </div>
+
+      <div class="chips" id="statusChips">
+        <button class="chip active" data-status="all">全部</button>
+        <button class="chip" data-status="reading">在读</button>
+        <button class="chip" data-status="unread">未读</button>
+        <button class="chip" data-status="done">读完</button>
+        <button class="chip" data-favorite="1">收藏</button>
+      </div>
+
+      <div class="selectrow">
+        <select id="formatSel" aria-label="格式">
+          <option value="all">全部格式</option>
+          <option value="epub">EPUB</option>
+          <option value="pdf">PDF</option>
+          <option value="mobi">MOBI</option>
+          <option value="azw3">AZW3</option>
+        </select>
+        <select id="tagSel" aria-label="标签">
+          <option value="">全部标签</option>
+        </select>
+        <select id="sortSel" aria-label="排序">
+          <option value="added">最近添加</option>
+          <option value="recent">最近更新</option>
+          <option value="title">按书名</option>
+          <option value="author">按作者</option>
+          <option value="size">按大小</option>
+        </select>
+      </div>
+
+      <div id="grid" class="grid"></div>
+      <div id="shelfEmpty" class="empty" hidden></div>
+    </section>
+
+    <!-- 书单 -->
+    <section id="view-lists" hidden>
+      <div class="lists-head">
+        <div>
+          <h2 class="view-title">书单</h2>
+          <p class="hint" style="margin:2px 0 0">按阶段建书单，各自记录进度</p>
+        </div>
+        <button id="newListBtn" class="btn small primary">＋ 新建</button>
+      </div>
+      <div id="listGrid" class="listgrid"></div>
+      <div id="listsEmpty" class="empty" hidden>
+        <strong>还没有书单</strong>
+        比如「2026 冬 · 社会学入门」<br>一个阶段一个阶段地攒，就是自己的知识体系
+      </div>
+    </section>
+
+    <!-- 清理 -->
+    <section id="view-clean" hidden>
+      <div class="clean-summary" id="cleanSummary"></div>
+      <div id="cleanBody"></div>
+    </section>
+
+    <!-- 设置 -->
+    <section id="view-settings" hidden>
+      <div class="settings-block">
+        <h3>扫描目录</h3>
+        <p class="hint">只读取这些目录里的电子书，不会移动或修改原文件。</p>
+        <div id="rootList" class="rootlist"></div>
+        <div class="addrow">
+          <input id="newRoot" type="text" placeholder="/books 或 /sata/.storage/books" spellcheck="false">
+          <button id="addRootBtn" class="btn small">添加</button>
+        </div>
+      </div>
+      <div class="settings-block">
+        <h3>云端服务</h3>
+        <div id="cloudInfo" class="cloudinfo"></div>
+      </div>
+      <div class="settings-block">
+        <h3>书库状态</h3>
+        <div id="settingsStats" class="statgrid"></div>
+        <button id="rescanBtn" class="btn wide">重新扫描</button>
+        <button id="backupBtn" class="btn wide" style="margin-top:8px">导出整个书架（ZIP）</button>
+        <p class="hint">书 + 书单/标签/进度清单打成一个 zip，适合离线备份；书多时需要等一会儿。</p>
+        <p id="scanDetail" class="hint"></p>
+      </div>
+      <div class="settings-block">
+        <h3>说明</h3>
+        <ul class="notes">
+          <li>书库只做索引：数据库和封面存在数据目录里，原书不动。</li>
+          <li>右上角「＋」可以从手机选文件或整个文件夹上传，只传云端没有的书。</li>
+          <li>详情页可以「下载到本机」，也可以把 EPUB 直接在书库里读。</li>
+          <li>浏览器菜单里「添加到主屏幕」，就能像 App 一样从桌面直接进。</li>
+        </ul>
+      </div>
+      <p class="version">Bookcase · <span id="versionText">私有云版</span></p>
+    </section>
+  </main>
+
+  <nav id="bottomnav">
+    <button class="navbtn active" data-view="shelf">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="16" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="4" width="6.5" height="16" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+      <span>书架</span>
+    </button>
+    <button class="navbtn" data-view="lists">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h11M5 12h11M5 18.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19 8v9a2 2 0 0 1-2 2h-1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>书单</span>
+    </button>
+    <button class="navbtn" data-view="clean">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>清理</span>
+    </button>
+    <button class="navbtn" data-view="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>设置</span>
+    </button>
+  </nav>
+</div>
+
+<!-- 详情 -->
+<div id="detail" class="sheet" hidden>
+  <div class="sheet-bg" data-close="1"></div>
+  <div class="sheet-panel">
+    <div class="grabber"></div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- 书单编辑 -->
+<div id="listSheet" class="sheet" hidden>
+  <div class="sheet-bg" data-close-list="1"></div>
+  <div class="sheet-panel">
+    <div class="grabber"></div>
+    <h3 id="listSheetTitle" class="sheet-title">新建书单</h3>
+    <div class="field">
+      <label>名称</label>
+      <input id="listName" maxlength="40" placeholder="如：2026 冬 · 社会学入门">
+    </div>
+    <div class="field">
+      <label>说明（可选）</label>
+      <textarea id="listNote" rows="4" placeholder="这一阶段想解决什么问题、阅读顺序、笔记…"></textarea>
+    </div>
+    <div class="d-actions">
+      <button id="listSaveBtn" class="btn primary">保存</button>
+      <button id="listDeleteBtn" class="btn danger" hidden>删除书单</button>
+    </div>
+  </div>
+</div>
+
+<!-- 选书进书单 -->
+<div id="picker" class="sheet" hidden>
+  <div class="sheet-bg" data-close-picker="1"></div>
+  <div class="sheet-panel picker-panel">
+    <div class="grabber"></div>
+    <h3 id="pickerTitle" class="sheet-title">添加书籍</h3>
+    <input id="pickerSearch" class="picker-search" placeholder="搜书名、作者…">
+    <div id="pickerList" class="picker-list"></div>
+    <div class="picker-foot">
+      <span id="pickerCount">已选 0 本</span>
+      <button id="pickerSave" class="btn primary small">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- 阅读器 -->
+<div id="reader" class="reader" hidden>
+  <div class="reader-head">
+    <button id="readerBack" class="icon-btn" aria-label="返回">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="reader-title" id="readerTitle"></div>
+    <div class="reader-pct" id="readerPct">0%</div>
+  </div>
+  <div id="viewer" class="viewer"></div>
+  <div class="reader-foot">
+    <button id="fontMinus" class="rbtn">A−</button>
+    <button id="fontPlus" class="rbtn">A+</button>
+    <button id="themeBtn" class="rbtn">夜</button>
+    <div class="spacer"></div>
+    <button id="prevPage" class="rbtn">‹</button>
+    <button id="nextPage" class="rbtn">›</button>
+  </div>
+</div>
+
+<!-- 上传 / 备份 -->
+<div id="uploadSheet" class="sheet" hidden>
+  <div class="sheet-bg" data-close-upload="1"></div>
+  <div class="sheet-panel upload-panel">
+    <div class="grabber"></div>
+    <h3 class="sheet-title">备份到云端</h3>
+    <p class="hint up-hint">从手机里选电子书或整个文件夹。云端已经有的（同名同大小）会自动跳过，只传新的。</p>
+    <div class="up-pick">
+      <label class="btn primary up-pick-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h7l5 5v13H6V3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 3v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>选择文件</span>
+        <input id="pickFiles" type="file" multiple>
+      </label>
+      <label class="btn up-pick-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>选择文件夹</span>
+        <input id="pickFolder" type="file" webkitdirectory multiple>
+      </label>
+    </div>
+    <div id="upDrop" class="up-drop">也可以把文件拖到这里</div>
+    <div id="upSummary" class="up-summary"></div>
+    <div id="upList" class="up-list"></div>
+    <div class="up-foot">
+      <button id="upCancel" class="btn small" hidden>取消</button>
+      <button id="upDone" class="btn primary small">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- 口令失效时重新登录 -->
+<div id="loginOverlay" class="login-overlay" hidden>
+  <div class="login-card">
+    <h3>需要访问口令</h3>
+    <p class="hint">登录状态过期了，重新输入一次就能继续。</p>
+    <input id="loginInput" type="password" placeholder="访问口令" autocomplete="current-password">
+    <button id="loginSubmit" class="btn primary wide">进入</button>
+    <p id="loginErr" class="hint" style="color:var(--bad)"></p>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="/static/vendor/jszip.min.js"></script>
+<script src="/static/vendor/epub.min.js"></script>
+<script src="/static/app.js?v=13"></script>
+</body>
+</html>

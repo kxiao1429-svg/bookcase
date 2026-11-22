@@ -1,0 +1,16 @@
+# 文本统一按 LF 存库；Windows 上的 .bat 检出为 CRLF
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.jks binary
+*.zip binary
+*.apk binary

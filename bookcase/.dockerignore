@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+library.db
+covers
+trash
+config.json
+.env
+tests
+*.log
+server.pid

@@ -1,0 +1,10 @@
+{
+  "roots": ["/Users/你/Books", "/Volumes/电子书"],
+  "trashDir": "/Users/你/Books/.bookcase-trash",
+  "uploadDir": "/Users/你/Books/书库上传",
+  "host": "127.0.0.1",
+  "port": 8765,
+  "token": "",
+  "maxUploadMB": 4096,
+  "autoScanMinutes": 0
+}

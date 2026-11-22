@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121009">
+<title>书库 · 登录</title>
+<link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; height: 100%;
+    background: #100e0a; color: #efe6d5;
+    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC",
+      "Microsoft YaHei", system-ui, sans-serif;
+  }
+  body { display: flex; align-items: center; justify-content: center; padding: 22px; }
+  .card {
+    width: 100%; max-width: 360px;
+    background: #16130d; border: 1px solid #2e2718; border-radius: 20px;
+    padding: 26px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  }
+  .logo { width: 44px; height: 44px; color: #e2a857; margin-bottom: 14px; }
+  h1 { margin: 0; font-size: 1.3rem; letter-spacing: .06em; font-weight: 650; }
+  p { margin: 8px 0 0; font-size: .8rem; line-height: 1.7; color: #a2957f; }
+  label { display: block; margin: 22px 0 7px; font-size: .74rem; color: #7a705f; letter-spacing: .08em; }
+  input {
+    width: 100%; padding: 12px 13px; border-radius: 12px;
+    border: 1px solid #2e2718; background: #1c1811; color: #efe6d5;
+    font: inherit; font-size: .94rem; outline: none;
+  }
+  input:focus { border-color: #8a6431; }
+  button {
+    width: 100%; margin-top: 14px; padding: 13px;
+    border: 1px solid #e2a857; border-radius: 12px;
+    background: #e2a857; color: #1b1408;
+    font: inherit; font-size: .94rem; font-weight: 650; cursor: pointer;
+  }
+  button:active { transform: scale(.99); }
+  button:disabled { opacity: .5; }
+  .err { min-height: 1.2em; margin-top: 12px; font-size: .78rem; color: #cf7055; }
+  .foot { margin-top: 18px; font-size: .7rem; color: #7a705f; line-height: 1.7; }
+  code { background: #1c1811; border: 1px solid #262016; border-radius: 6px; padding: 1px 5px; font-size: .92em; }
+</style>
+</head>
+<body>
+<form class="card" id="loginForm">
+  <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5V5.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5A2.5 2.5 0 0 1 4 20.5Z" fill="currentColor" opacity=".25"/></svg>
+  <h1>书库</h1>
+  <p>这个书库放在你的私有云上，输入访问口令才能进入。</p>
+  <label for="token">访问口令</label>
+  <input id="token" type="password" name="token" autocomplete="current-password"
+         placeholder="输入访问口令" autofocus required>
+  <button id="loginBtn" type="submit">进入书库</button>
+  <div class="err" id="err"></div>
+  <div class="foot">口令在部署时设置的 <code>token</code> 里；<br>忘了的话在 <code>config.json</code> 改掉后重启服务。</div>
+</form>
+<script>
+(() => {
+  'use strict';
+  const form = document.getElementById('loginForm');
+  const input = document.getElementById('token');
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('err');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = input.value.trim();
+    if (!token) { err.textContent = '先输入口令'; return; }
+    btn.disabled = true;
+    err.textContent = '';
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || '口令不对');
+      location.replace('/');
+    } catch (ex) {
+      err.textContent = ex.message || '登录失败';
+      input.select();
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
