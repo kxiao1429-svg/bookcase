@@ -114,6 +114,10 @@ echo "sdk.dir=/path/to/Android/Sdk" > local.properties   # 这个文件不入库
 [pdf.js](https://github.com/mozilla/pdf.js)、[JSZip](https://stuk.github.io/jszip/)，
 版权与许可归各自作者，使用或再分发时请遵守对应许可证。
 
+## 更新日志
+
+1.0.0 → 1.12.0 每个版本改了什么、为什么改，见 [CHANGELOG.md](CHANGELOG.md)。
+
 ## 说明
 
 - 本项目只用于管理自己合法拥有的电子书，不提供任何书籍内容。
