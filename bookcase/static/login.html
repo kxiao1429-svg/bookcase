@@ -3,46 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#121009">
+<meta name="theme-color" content="#e7ebf0">
 <title>书库 · 登录</title>
 <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem('bookcase-theme')||'light';document.documentElement.dataset.theme=t;}catch(e){}</script>
 <style>
-  :root { color-scheme: dark; }
+  :root {
+    color-scheme: light;
+    --bg: #e7ebf0; --card: #fbfcfe; --line: #c2cad7;
+    --text: #0f1726; --muted: #55617a; --faint: #8b95a8; --accent: #bf3a2b;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d1420; --card: #16202f; --line: #26344a;
+    --text: #e7edf5; --muted: #93a3b8; --faint: #6b7c92; --accent: #e0685a;
+  }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
     margin: 0; height: 100%;
-    background: #100e0a; color: #efe6d5;
-    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC",
-      "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
   }
   body { display: flex; align-items: center; justify-content: center; padding: 22px; }
   .card {
     width: 100%; max-width: 360px;
-    background: #16130d; border: 1px solid #2e2718; border-radius: 20px;
+    background: var(--bg); border: 1px solid var(--text); border-radius: 0;
     padding: 26px 22px calc(22px + env(safe-area-inset-bottom, 0px));
-    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
   }
-  .logo { width: 44px; height: 44px; color: #e2a857; margin-bottom: 14px; }
-  h1 { margin: 0; font-size: 1.3rem; letter-spacing: .06em; font-weight: 650; }
-  p { margin: 8px 0 0; font-size: .8rem; line-height: 1.7; color: #a2957f; }
-  label { display: block; margin: 22px 0 7px; font-size: .74rem; color: #7a705f; letter-spacing: .08em; }
+  .logo { width: 40px; height: 40px; color: var(--accent); margin-bottom: 14px; }
+  h1 {
+    margin: 0; font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: 1.3rem; letter-spacing: .26em; font-weight: 700;
+  }
+  p { margin: 8px 0 0; font-size: .8rem; line-height: 1.75; color: var(--muted); }
+  label {
+    display: block; margin: 24px 0 7px;
+    font-family: "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: .62rem; color: var(--faint); letter-spacing: .18em; text-transform: uppercase;
+  }
   input {
-    width: 100%; padding: 12px 13px; border-radius: 12px;
-    border: 1px solid #2e2718; background: #1c1811; color: #efe6d5;
+    width: 100%; padding: 12px 13px; border-radius: 0;
+    border: 1px solid var(--line); background: var(--card); color: var(--text);
     font: inherit; font-size: .94rem; outline: none;
   }
-  input:focus { border-color: #8a6431; }
+  input:focus { border-color: var(--text); }
   button {
     width: 100%; margin-top: 14px; padding: 13px;
-    border: 1px solid #e2a857; border-radius: 12px;
-    background: #e2a857; color: #1b1408;
-    font: inherit; font-size: .94rem; font-weight: 650; cursor: pointer;
+    border: 1px solid var(--text); border-radius: 0;
+    background: var(--text); color: var(--bg);
+    font: inherit; font-size: .92rem; font-weight: 600; letter-spacing: .04em; cursor: pointer;
   }
-  button:active { transform: scale(.99); }
+  button:active { opacity: .85; }
   button:disabled { opacity: .5; }
-  .err { min-height: 1.2em; margin-top: 12px; font-size: .78rem; color: #cf7055; }
-  .foot { margin-top: 18px; font-size: .7rem; color: #7a705f; line-height: 1.7; }
-  code { background: #1c1811; border: 1px solid #262016; border-radius: 6px; padding: 1px 5px; font-size: .92em; }
+  .err { min-height: 1.2em; margin-top: 12px; font-size: .78rem; color: var(--accent); }
+  .foot { margin-top: 20px; font-size: .68rem; color: var(--faint); line-height: 1.8; }
+  code {
+    background: var(--card); border: 1px solid var(--line); border-radius: 0;
+    padding: 1px 5px; font-size: .92em;
+  }
 </style>
 </head>
 <body>
