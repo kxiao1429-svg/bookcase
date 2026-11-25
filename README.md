@@ -70,7 +70,7 @@ echo "sdk.dir=/path/to/Android/Sdk" > local.properties   # 这个文件不入库
 才会产出可安装的签名包。Windows 上注意工程路径不要含中文（AGP 会拒绝）。
 
 > 不想自己编译？[**Releases**](https://github.com/kxiao1429-svg/bookcase/releases/latest)
-> 里有打包好的 `bookcase-1.12.0.apk`（arm64，Android 7.0+）。
+> 里有打包好的 `bookcase-1.13.0.apk`（arm64，Android 7.0+）。
 
 ## 目录结构
 
@@ -117,7 +117,7 @@ echo "sdk.dir=/path/to/Android/Sdk" > local.properties   # 这个文件不入库
 
 ## 更新日志
 
-1.0.0 → 1.12.0 每个版本改了什么、为什么改，见 [CHANGELOG.md](CHANGELOG.md)。
+1.0.0 → 1.13.0 每个版本改了什么、为什么改，见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 许可证
 

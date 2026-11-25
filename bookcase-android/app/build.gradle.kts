@@ -22,8 +22,8 @@ android {
         applicationId = "com.bookcase.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 13
-        versionName = "1.12.0"
+        versionCode = 14
+        versionName = "1.13.0"
 
         ndk {
             // 只打真机常用的 64 位 ARM；需要模拟器再加 "x86_64"
