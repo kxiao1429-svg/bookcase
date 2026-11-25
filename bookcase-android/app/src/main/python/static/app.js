@@ -293,24 +293,30 @@
       return;
     }
     empty.hidden = true;
+    const countEl = $('#shelfCount');
+    if (countEl) countEl.textContent = `${state.books.length} 本`;
     grid.innerHTML = state.books.map(b => {
       const pct = Math.max(0, Math.min(100, b.progress || 0));
-      const ph = `<div class="ph" style="--ph-bg:${pal(b.id)}"><span>${esc(b.title)}</span></div>`;
-      const img = b.cover
-        ? `<img src="/api/cover/${b.id}?v=${b.updatedAt || 0}" alt="" loading="lazy" onerror="this.remove()">`
+      const stLabel = b.status === 'reading' ? '在读' : b.status === 'done' ? '读完' : '未读';
+      const date = b.addedAt ? new Date(b.addedAt * 1000) : null;
+      const dateStr = date
+        ? `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} 入库`
         : '';
+      const meta = [(b.format || '').toUpperCase(), b.sizeHuman, dateStr].filter(Boolean).join('   ·   ');
+      const cover = b.cover
+        ? `<img src="/api/cover/${b.id}?v=${b.updatedAt || 0}" alt="" loading="lazy" onerror="this.remove()">`
+        : `<span class="ph" style="--ph-bg:${pal(b.id)}"><i>${esc((b.title || "?").slice(0, 1))}</i></span>`;
       return `
-      <article class="card" data-id="${b.id}">
-        <div class="cover">
-          ${ph}${img}
-          <span class="fmt">${esc(b.format)}</span>
-          ${b.favorite ? '<span class="heart on">♥</span>' : ''}
-          ${pct > 0 && pct < 100 ? `<div class="pbar"><span style="width:${pct}%"></span></div><span class="badge-read">${pct}%</span>` : ''}
-          ${b.status === 'done' ? '<span class="badge-read">读完</span>' : ''}
+      <article class="f1-row" data-id="${b.id}">
+        <div class="f1-thumb">${cover}</div>
+        <div class="f1-body">
+          <div class="f1-title">${esc(b.title)}</div>
+          <div class="f1-author">${esc(b.author || '未知作者')}${b.publisher ? ' · ' + esc(b.publisher) : ''}</div>
+          <div class="f1-meta">${meta}${b.favorite ? '   ·   ♥ 收藏' : ''}</div>
         </div>
-        <div class="meta">
-          <div class="t">${esc(b.title)}</div>
-          <div class="a">${esc(b.author || '未知作者')}</div>
+        <div class="f1-side ${b.status || 'unread'}">
+          <span class="st">${stLabel}</span>
+          ${pct > 0 && pct < 100 ? `<span class="pc">${pct}%</span>` : ''}
         </div>
       </article>`;
     }).join('');
@@ -1611,7 +1617,7 @@
 
     // 封面点击看详情
     $('#grid').addEventListener('click', e => {
-      const card = e.target.closest('.card');
+      const card = e.target.closest('.card, .f1-row');
       if (card) openDetail(Number(card.dataset.id));
     });
 
@@ -1908,10 +1914,14 @@
   // ------------------------------------------------------------ 启动
 
   async function init() {
-    applyTheme(document.documentElement.dataset.theme || 'dark');
+    applyTheme(document.documentElement.dataset.theme || 'light');
     $$('[data-theme-btn]').forEach(btn => {
       btn.onclick = () => applyTheme(btn.dataset.themeBtn);
     });
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+    }
     if (window.pdfjsLib) {
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/static/vendor/pdf.worker.min.js';
     }

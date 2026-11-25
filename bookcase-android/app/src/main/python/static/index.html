@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
-<meta name="theme-color" content="#121009">
+<meta name="theme-color" content="#e7ebf0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>书库</title>
 <link rel="manifest" href="/static/manifest.json">
 <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
-<script>try{var t=localStorage.getItem('bookcase-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>try{var t=localStorage.getItem('bookcase-theme')||'light';document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="stylesheet" href="/static/style.css?v=19">
+<link rel="stylesheet" href="/static/f1.css?v=1">
 </head>
 <body>
 
@@ -22,6 +23,9 @@
         <p id="subtitle">正在读取…</p>
       </div>
     </div>
+    <button id="themeToggle" class="icon-btn" title="切换夜间模式" aria-label="切换夜间模式">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </button>
     <button id="scanBtn" class="icon-btn" title="检查新书" aria-label="检查新书">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
@@ -80,6 +84,7 @@
         </select>
       </div>
 
+      <div class="f1-head"><span>书架</span><b id="shelfCount"></b></div>
       <div id="grid" class="grid"></div>
       <div id="shelfEmpty" class="empty" hidden></div>
     </section>
